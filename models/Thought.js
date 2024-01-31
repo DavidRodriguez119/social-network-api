@@ -10,8 +10,10 @@ const thoughtSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Reaction'
   }],
-}, {
-  timestamps: true
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 // Create a virtual property `reactionCount` that gets the amount of reactions per post
