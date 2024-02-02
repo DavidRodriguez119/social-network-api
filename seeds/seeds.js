@@ -1,5 +1,5 @@
 const connection = require('../config/connection');
-const { User, Thought } = require('../models');
+const { User, Thought, reactionSchema } = require('../models');
 
 connection.on('error', (err) => err);
 
@@ -7,7 +7,8 @@ connection.on('error', (err) => err);
 const users = [
     {
         username: `user_1`,
-        email: `user.one@example.com`
+        email: `user.one@example.com`,
+        thoughts: [`65bc66729090ee61caaeead9`]
     },
     {
         username: `user_2`,
@@ -51,12 +52,6 @@ const thoughts = [
     }
 ];
 
-// const reactions = [
-//     {
-//         reactionBody: `test-reaction`
-//     }
-// ]
-
 connection.once(`open`, async () => {
     console.log(`conected`);
 
@@ -75,4 +70,5 @@ connection.once(`open`, async () => {
     await Thought.insertMany(thoughts);
 
     console.info('Seeding complete! 🌱');
+    process.exit(0);
 })

@@ -15,7 +15,7 @@ const thoughtSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    get: (date) => formatdate(date)
+    get:  (date) => formatDate(date)
   },
 });
 

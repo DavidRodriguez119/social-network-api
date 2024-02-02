@@ -24,34 +24,46 @@ router.get(`/find/:userId`, async (req, res) => {
   }
 });
 
-router.post(`/`, (req, res) => {
-  
-})
+// create user
+router.post(`/`, async (req, res) => {
+  try {
+    const user = await User.create(req.body)
+    res.json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// Edit user
+router.put(`/edit/:id`, async (req, res) => {
+  try{
+    const updatedData = req.body;
+    const updatedUser = await User.findOneAndUpdate(
+      {_id: req.params.id},
+      { $set: req.body },
+      { runValidators: true, new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'No user with this id!' });
+    }
+    res.json(updatedData);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// DELETE USER
+router.delete(`/delete/:id`, async (req, res) => {
+  try {
+    const user = await User.findOneAndDelete({ _id: req.params.id });
+    if (!user) {
+      return res.status(404).json({ message: 'No such user exists' })
+    };
+    res.json({ message: 'User successfully deleted' });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+});
 
 module.exports = router;
-
-
-    // // create a new user
-    // async createUser(req, res) {
-    //   try {
-    //     const user = await User.create(req.body);
-    //     res.json(user);
-    //   } catch (err) {
-    //     res.status(500).json(err);
-    //   }
-    // },
-    // // Delete a user and associated apps
-    // async deleteUser(req, res) {
-    //   try {
-    //     const user = await User.findOneAndDelete({ _id: req.params.userId });
-  
-    //     if (!user) {
-    //       return res.status(404).json({ message: 'No user with that ID' });
-    //     }
-  
-    //     await Application.deleteMany({ _id: { $in: user.applications } });
-    //     res.json({ message: 'User and associated apps deleted!' })
-    //   } catch (err) {
-    //     res.status(500).json(err);
-    //   }
-    // },
