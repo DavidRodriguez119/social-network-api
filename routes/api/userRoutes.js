@@ -24,6 +24,10 @@ router.get(`/find/:userId`, async (req, res) => {
   }
 });
 
+router.post(`/`, (req, res) => {
+  
+})
+
 module.exports = router;
 
 

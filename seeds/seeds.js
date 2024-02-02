@@ -51,6 +51,12 @@ const thoughts = [
     }
 ];
 
+// const reactions = [
+//     {
+//         reactionBody: `test-reaction`
+//     }
+// ]
+
 connection.once(`open`, async () => {
     console.log(`conected`);
 
@@ -58,15 +64,15 @@ connection.once(`open`, async () => {
     let thoughtCheck = await connection.db.listCollections({ name: 'thoughts' }).toArray();
     if (thoughtCheck.length) {
         await connection.dropCollection('thoughts');
-    };    
+    };
+    
     let userCheck = await connection.db.listCollections({ name: 'users' }).toArray();
     if (userCheck.length) {
         await connection.dropCollection('users');
     };
 
-    await User.collection.insertMany(users);
-    await Thought.collection.insertMany(thoughts);
+    await User.insertMany(users);
+    await Thought.insertMany(thoughts);
 
     console.info('Seeding complete! 🌱');
-    process.exit(0);
 })
