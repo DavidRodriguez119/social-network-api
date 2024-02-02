@@ -1,18 +1,21 @@
 const mongoose = require('mongoose');
+const reactionSchema = require(`./Reactions`)
+
+const formatdate = (date) => {
+  return date.getmonth()
+}
 
 const thoughtSchema = new mongoose.Schema({
   thoughtText: { type: String, required: true, minlength: 1, maxlength: 280},
-  username: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
-  reactions: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Reaction'
-  }],
+  username: {
+    type: String,
+    required: true
+  },
+  reactions: [reactionSchema],
   createdAt: {
     type: Date,
     default: Date.now,
+    get:  (date) => formatDate(date)
   },
 });
 

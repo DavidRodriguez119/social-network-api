@@ -1,5 +1,5 @@
 const connection = require('../config/connection');
-const { User, Thought } = require('../models');
+const { User, Thought, reactionSchema } = require('../models');
 
 connection.on('error', (err) => err);
 
@@ -7,7 +7,8 @@ connection.on('error', (err) => err);
 const users = [
     {
         username: `user_1`,
-        email: `user.one@example.com`
+        email: `user.one@example.com`,
+        thoughts: [`65bc66729090ee61caaeead9`]
     },
     {
         username: `user_2`,
@@ -58,14 +59,15 @@ connection.once(`open`, async () => {
     let thoughtCheck = await connection.db.listCollections({ name: 'thoughts' }).toArray();
     if (thoughtCheck.length) {
         await connection.dropCollection('thoughts');
-    };    
+    };
+    
     let userCheck = await connection.db.listCollections({ name: 'users' }).toArray();
     if (userCheck.length) {
         await connection.dropCollection('users');
     };
 
-    await User.collection.insertMany(users);
-    await Thought.collection.insertMany(thoughts);
+    await User.insertMany(users);
+    await Thought.insertMany(thoughts);
 
     console.info('Seeding complete! 🌱');
     process.exit(0);

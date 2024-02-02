@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+const formatDate = (date) => {
+  return date.getmonth()
+}
+
 const reactionSchema = new mongoose.Schema({
   reactionId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -11,15 +15,14 @@ const reactionSchema = new mongoose.Schema({
     maxlength: 280
   },
   username: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    type: String,
+    required: true
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
+    get: (date) => formatDate(date)
   }
 });
 
-const Reaction = mongoose.model('Reaction', reactionSchema);
-
-module.exports = Reaction;
+module.exports = reactionSchema;
