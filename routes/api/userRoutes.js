@@ -66,4 +66,14 @@ router.delete(`/delete/:id`, async (req, res) => {
   }
 });
 
+// add a new friend
+router.post(`/:userId/friends/:friendId`, (req, res) => {
+
+});
+
+// delete a friend
+router.delete(`/:userId/friends/:friendId`, (req, res) => {
+
+});
+
 module.exports = router;
