@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const formatDate = (date) => {
-  return date.getmonth()
+  return date.toISOString().slice(0, 10);
 }
 
 const reactionSchema = new mongoose.Schema({
@@ -23,6 +23,10 @@ const reactionSchema = new mongoose.Schema({
     default: Date.now,
     get: (date) => formatDate(date)
   }
-});
+},
+{
+  toJSON: { getters: true },
+}
+);
 
 module.exports = reactionSchema;
