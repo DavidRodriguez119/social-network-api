@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User, Thought } = require('../../models');
+const { User, Thought, reactionSchema } = require('../../models');
 
 // /api/thoughts
 router.get(`/`, async (req, res) => {
@@ -9,13 +9,14 @@ router.get(`/`, async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
-})
-    // .post(createThought);
+});
 
 // /api/thoughts/:thoughtId
 router.get(`/find/:thoughtId`, async (req, res) => {
   try {
     const thought = await Thought.findOne({ _id: req.params.thoughtId })
+      .select('-__v')
+      .lean();
     if (!thought) {
       return res.status(404).json({ message: 'No thought with that ID' });
     }  
@@ -23,7 +24,7 @@ router.get(`/find/:thoughtId`, async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
-})
+});
 
 // create thought
 router.post(`/`, async (req, res) => {
@@ -65,6 +66,16 @@ router.delete(`/delete/:id`, async (req, res) => {
     console.log(err);
     res.status(500).json(err);
   }
-})
+});
+
+// Create a reaction 
+router.post(`/:thoughtId/reactions`, (req, res) => {
+
+});
+
+// remove a reaction
+router.delete(`/:thoughtId/reactions`, (req, res) => {
+
+});
 
 module.exports = router;
