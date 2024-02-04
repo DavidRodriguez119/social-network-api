@@ -15,6 +15,8 @@ router.get(`/`, async (req, res) => {
 router.get(`/find/:userId`, async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.userId })
+      .select('-__v')
+      .lean();
     if (!user) {
       return res.status(404).json({ message: 'No user with that ID' });
     }  
@@ -38,15 +40,16 @@ router.post(`/`, async (req, res) => {
 router.put(`/edit/:id`, async (req, res) => {
   try{
     const updatedData = req.body;
+    const { username, email } = req.body;
     const updatedUser = await User.findOneAndUpdate(
       {_id: req.params.id},
-      { $set: req.body },
+      { $set: { username, email } },
       { runValidators: true, new: true }
     );
     if (!updatedUser) {
       return res.status(404).json({ message: 'No user with this id!' });
     }
-    res.json(updatedData);
+    res.json(updatedUser);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -67,13 +70,45 @@ router.delete(`/delete/:id`, async (req, res) => {
 });
 
 // add a new friend
-router.post(`/:userId/friends/:friendId`, (req, res) => {
+router.post(`/:userId/friends/:friendId`, async (req, res) => {
+  try {
+    console.log('You are adding a friend');
+    const userSelected = await User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { friends: req.params.friendId } },
+      { runValidators: true, new: true }
+    );
 
+    if (!userSelected) {
+      return res
+        .status(404)
+        .json({ message: 'No user found with that ID :(' })
+    }
+    res.json(userSelected);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 // delete a friend
-router.delete(`/:userId/friends/:friendId`, (req, res) => {
+router.delete(`/:userId/friends/:friendId`, async (req, res) => {
+  try {
+    const userSelected = await User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: req.params.friendId } },
+      { runValidators: true, new: true }
+    );
 
+    if (!userSelected) {
+      return res
+        .status(404)
+        .json({ message: 'No user found with that ID :(' });
+    }
+
+    res.json(userSelected);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;
