@@ -17,6 +17,10 @@ const thoughtSchema = new mongoose.Schema({
     default: Date.now,
     get:  (date) => formatDate(date)
   },
+},
+{
+    toJSON: { virtuals: true },
+    id: false,
 });
 
 // Create a virtual property `reactionCount` that gets the amount of reactions per post
