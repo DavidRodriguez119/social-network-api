@@ -11,6 +11,10 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }]
+},
+{
+    toJSON: { virtuals: true },
+    id: false,
 });
 
 // Create a virtual property `friendCount` that gets the amount of friends per post

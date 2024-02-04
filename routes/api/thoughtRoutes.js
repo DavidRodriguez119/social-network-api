@@ -48,7 +48,7 @@ router.put(`/edit/:id`, async (req, res) => {
     if (!updatedThought) {
       return res.status(404).json({ message: 'No thought with this id!' });
     }
-    res.json(updatedData);
+    res.json(updatedThought);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -69,13 +69,45 @@ router.delete(`/delete/:id`, async (req, res) => {
 });
 
 // Create a reaction 
-router.post(`/:thoughtId/reactions`, (req, res) => {
+router.post(`/:thoughtId/reactions`, async (req, res) => {
+  try {
+    console.log('You are adding a reaction');
+    const thoughtSelected = await Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $addToSet: { reactions: req.body } },
+      { runValidators: true, new: true }
+    );
 
+    if (!thoughtSelected) {
+      return res
+        .status(404)
+        .json({ message: 'No thought found with that ID :(' })
+    }
+    res.json(thoughtSelected);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 // remove a reaction
-router.delete(`/:thoughtId/reactions`, (req, res) => {
+router.delete(`/:thoughtId/reactions/:reactionId`, async (req, res) => {
+  try {
+    const thoughtSelected = await Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: { reactionId: req.params.reactionId } } },
+      { runValidators: true, new: true }
+    );
 
+    if (!thoughtSelected) {
+      return res
+        .status(404)
+        .json({ message: 'No thought found with that ID :(' });
+    }
+
+    res.json(thoughtSelected);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;

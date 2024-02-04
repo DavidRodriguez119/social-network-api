@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const reactionSchema = require(`./Reactions`)
 
-const formatdate = (date) => {
-  return date.getmonth()
+const formatDate = (date) => {
+  return date.toISOString().slice(0, 10);
 }
 
 const thoughtSchema = new mongoose.Schema({
@@ -17,6 +17,10 @@ const thoughtSchema = new mongoose.Schema({
     default: Date.now,
     get:  (date) => formatDate(date)
   },
+},
+{
+    toJSON: { virtuals: true, getters: true },
+    id: false,
 });
 
 // Create a virtual property `reactionCount` that gets the amount of reactions per post
